@@ -1,0 +1,11 @@
+// Place your settings in this file to overwrite the default settings
+{
+    "python.pythonPath": "/Users/phil/mini35/bin/python",
+    "python.linting.flake8Enabled": true,
+    "python.formatting.provider": "autopep8",
+    "python.linting.pylintEnabled": false,
+    "python.linting.prospectorEnabled": true,
+    "python.linting.prospectorArgs": [
+    "--strictness=high"
+  ]
+}
