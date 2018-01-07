@@ -4,7 +4,6 @@
 """
 
 import argparse
-import textwrap
 from netCDF4 import Dataset
 
 def ncdump(nc_fid, verb=True):
@@ -78,7 +77,7 @@ def make_parser():
     set up the command line arguments needed to call the program
     """
     linebreaks = argparse.RawTextHelpFormatter
-    descrip = textwrap.dedent(globals()['__doc__'])
+    descrip = '__doc__'.ljust(80)
     parser = argparse.ArgumentParser(formatter_class=linebreaks,
                                      description=descrip)
     parser.add_argument('ncfile', type=str, help='netcdf file')
