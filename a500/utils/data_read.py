@@ -114,13 +114,10 @@ def make_parser():
                         help="root of url, detaults to https://clouds.eos.ubc.ca/~phil/courses/atsc301/downloads")
     return parser
 
+def main(args=None):
+    parser = make_parser()
+    args=parser.parse_args(args)
+    download(args.filename, root=args.root)
 
 if __name__ == "__main__":
-
-    parser = make_parser()
-    args=parser.parse_args()
-    download(args.filename, root=args.root)
-   
-    
-
-
+    main()
