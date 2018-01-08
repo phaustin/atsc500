@@ -15,7 +15,7 @@
 
 """
 import psutil
-from pyutils.helper_funs import make_tuple
+from a500.utils.helper_funs import make_tuple
 
 import argparse
 import textwrap
