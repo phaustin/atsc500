@@ -61,15 +61,17 @@ def ncdump(nc_fid, verb=True):
             print("\t\tsize:", len(nc_fid.dimensions[dim]))
             print_ncattr(dim)
     # Variable information.
-    nc_vars = [var for var in nc_fid.variables]  # list of nc variables
+    
     if verb:
-        print("NetCDF variable information:")
-        for var in nc_vars:
-            if var not in nc_dims:
-                print('\tName:', var)
-                print("\t\tdimensions:", nc_fid.variables[var].dimensions)
-                print("\t\tsize:", nc_fid.variables[var].size)
-                print_ncattr(var)
+        for group_name, group in nc_fid.groups.items():
+            print(f"NetCDF variable information for group {group_name}:")
+            nc_vars = [var for var in group.variables]  # list of nc variables
+            for var in nc_vars:
+                if var not in nc_dims:
+                    print('\tName:', var)
+                    print("\t\tdimensions:", group.variables[var].dimensions)
+                    print("\t\tsize:", group.variables[var].size)
+                    print_ncattr(var)
     return nc_attrs, nc_dims, nc_vars
 
 def make_parser():
