@@ -1,10 +1,12 @@
 """
-  recursively dumpy netcdf files
+  recursively dump netcdf file metadata -- taken from:
+
   http://schubert.atmos.colostate.edu/~cslocum/netcdf_example.html
 """
 
 import argparse
 from netCDF4 import Dataset
+import textwrap
 
 def ncdump(nc_fid, verb=True):
     '''
@@ -63,7 +65,11 @@ def ncdump(nc_fid, verb=True):
     # Variable information.
     
     if verb:
-        for group_name, group in nc_fid.groups.items():
+        groups=list(nc_fid.groups.items())
+        if not groups:
+            group_name="root"
+            groups = [(group_name,nc_fid)]
+        for group_name, group in groups:
             print(f"NetCDF variable information for group {group_name}:")
             nc_vars = [var for var in group.variables]  # list of nc variables
             for var in nc_vars:
@@ -75,14 +81,11 @@ def ncdump(nc_fid, verb=True):
     return nc_attrs, nc_dims, nc_vars
 
 def make_parser():
-    """
-    set up the command line arguments needed to call the program
-    """
     linebreaks = argparse.RawTextHelpFormatter
-    descrip = '__doc__'.ljust(80)
+    descrip = textwrap.dedent(__doc__)
     parser = argparse.ArgumentParser(formatter_class=linebreaks,
                                      description=descrip)
-    parser.add_argument('ncfile', type=str, help='netcdf file')
+    parser.add_argument('ncfile', type=str, help='path to netcdf file to dump')
     return parser
 
 def main(args=None):

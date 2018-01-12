@@ -27,17 +27,23 @@ def on_terminate(proc):
 
 def make_parser():
     linebreaks = argparse.RawTextHelpFormatter
-    descrip = textwrap.dedent(globals()['__doc__'])
+    descrip = textwrap.dedent(killjobs.__doc__)
     parser = argparse.ArgumentParser(formatter_class=linebreaks,
                                      description=descrip)
     parser.add_argument('snip', type=str, help='string in processname')
     return parser
 
 
-def main(args=None):
+def killjobs(args=None):
     """
-    args: optional -- if missing then args will be taken from command line
-          or pass [h5_file] -- list with name of h5_file to open
+    kill all processes which contain a string passed from the command line
+
+    Parameters
+    ----------
+
+    args: optional -- argparse argument containing  the string
+          to search for in args.snip
+          if missing then args will be supplied from the command line
     """
     parser = make_parser()
     args = parser.parse_args(args)
@@ -82,5 +88,5 @@ def main(args=None):
 
 if __name__ == "__main__":
 
-    main()
+    killjobs()
     

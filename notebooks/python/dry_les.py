@@ -48,7 +48,7 @@ import numpy as np
 # In[3]:
 
 
-from  a405.utils.data_read import download
+from  a500.utils.data_read import download
 the_root="http://clouds.eos.ubc.ca/~phil/docs/atsc500/data/"
 the_file='case_60_10.nc'
 out=download(the_file,root=the_root)

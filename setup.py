@@ -5,7 +5,7 @@ setup(
     packages=find_packages(),
     entry_points={
           'console_scripts': [
-              'killjobs = a500.utils.killjobs:main',
+              'killjobs = a500.utils.killjobs:killjobs',
               'pyncdump = a500.utils.ncdump:main'
           ]
     },

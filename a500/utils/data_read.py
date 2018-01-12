@@ -1,26 +1,23 @@
 """
-  e582utils.data_read 
-  ___________________
+  a500.utils.data_read 
+  ____________________
 
-  downloads a file named filename from the atsc301 downloads directory
+  downloads a file named filename from the atsc500 downloads directory
   and save it as a local file with the same name. 
 
   to run from the command line::
 
-    python -m e582utils.data_read photon_data.csv
+    python -m a500.utils.data_read photon_data.csv
 
-    or
-
-    python -m e582utils.data_read A20162092016216.L3m_8D_PAR_par_9km.nc --root https://oceandata.sci.gsfc.nasa.gov/cgi/getfile
-
+    
   to run from a python script::
 
-    from e582utils.data_read import download
+    from a500.utils.data_read import download
     download('photon_data.csv')
 
-  or
+  or::
 
-    from e582utils.data_read import download
+    from a500.utils.data_read import download
     root="https://oceandata.sci.gsfc.nasa.gov/cgi/getfile"
     filename="A20162092016216.L3m_8D_PAR_par_9km.nc"
     download(filename,root=root)
