@@ -2,7 +2,7 @@
 # coding: utf-8
 
 # <h1>Table of Contents<span class="tocSkip"></span></h1>
-# <div class="toc" style="margin-top: 1em;"><ul class="toc-item"><li><span><a href="#Scale-heights-for-typical-atmospheric-soundings" data-toc-modified-id="Scale-heights-for-typical-atmospheric-soundings-1"><span class="toc-item-num">1&nbsp;&nbsp;</span>Scale heights for typical atmospheric soundings</a></span><ul class="toc-item"><li><span><a href="#Plot-McClatchey's-US-Standard-Atmospheres" data-toc-modified-id="Plot-McClatchey's-US-Standard-Atmospheres-1.1"><span class="toc-item-num">1.1&nbsp;&nbsp;</span>Plot McClatchey's US Standard Atmospheres</a></span></li></ul></li><li><span><a href="#McClatchey-US-standard-atmospheres" data-toc-modified-id="McClatchey-US-standard-atmospheres-2"><span class="toc-item-num">2&nbsp;&nbsp;</span>McClatchey US standard atmospheres</a></span><ul class="toc-item"><li><span><a href="#Data-layout" data-toc-modified-id="Data-layout-2.1"><span class="toc-item-num">2.1&nbsp;&nbsp;</span>Data layout</a></span><ul class="toc-item"><li><span><a href="#Plot--temp-and-vapor-mixing-ratio-rmix-($\rho_{H2O}/\rho_{air}$)" data-toc-modified-id="Plot--temp-and-vapor-mixing-ratio-rmix-($\rho_{H2O}/\rho_{air}$)-2.1.1"><span class="toc-item-num">2.1.1&nbsp;&nbsp;</span>Plot  temp and vapor mixing ratio rmix ($\rho_{H2O}/\rho_{air}$)</a></span></li></ul></li><li><span><a href="#Calculating-scale-heights-for-temperature-and-air-density" data-toc-modified-id="Calculating-scale-heights-for-temperature-and-air-density-2.2"><span class="toc-item-num">2.2&nbsp;&nbsp;</span>Calculating scale heights for temperature and air density</a></span><ul class="toc-item"><li><span><a href="#How-do-$\overline{H_p}$-and-$\overline{H_\rho}$-compare-for-the-tropical-sounding?" data-toc-modified-id="How-do-$\overline{H_p}$-and-$\overline{H_\rho}$-compare-for-the-tropical-sounding?-2.2.1"><span class="toc-item-num">2.2.1&nbsp;&nbsp;</span>How do $\overline{H_p}$ and $\overline{H_\rho}$ compare for the tropical sounding?</a></span></li><li><span><a href="#How-well-do-these-average-values-represent-the-pressure-and-density-profiles?" data-toc-modified-id="How-well-do-these-average-values-represent-the-pressure-and-density-profiles?-2.2.2"><span class="toc-item-num">2.2.2&nbsp;&nbsp;</span>How well do these average values represent the pressure and density profiles?</a></span></li><li><span><a href="#Assignment-for-Friday" data-toc-modified-id="Assignment-for-Friday-2.2.3"><span class="toc-item-num">2.2.3&nbsp;&nbsp;</span>Assignment for Friday</a></span></li></ul></li></ul></li></ul></div>
+# <div class="toc" style="margin-top: 1em;"><ul class="toc-item"><li><span><a href="#Scale-heights-for-typical-atmospheric-soundings" data-toc-modified-id="Scale-heights-for-typical-atmospheric-soundings-1"><span class="toc-item-num">1&nbsp;&nbsp;</span>Scale heights for typical atmospheric soundings</a></span><ul class="toc-item"><li><span><a href="#Plot-McClatchey's-US-Standard-Atmospheres" data-toc-modified-id="Plot-McClatchey's-US-Standard-Atmospheres-1.1"><span class="toc-item-num">1.1&nbsp;&nbsp;</span>Plot McClatchey's US Standard Atmospheres</a></span></li></ul></li><li><span><a href="#McClatchey-US-standard-atmospheres" data-toc-modified-id="McClatchey-US-standard-atmospheres-2"><span class="toc-item-num">2&nbsp;&nbsp;</span>McClatchey US standard atmospheres</a></span><ul class="toc-item"><li><span><a href="#Data-layout" data-toc-modified-id="Data-layout-2.1"><span class="toc-item-num">2.1&nbsp;&nbsp;</span>Data layout</a></span><ul class="toc-item"><li><span><a href="#Plot--temp-and-vapor-mixing-ratio-rmix-($\rho_{H2O}/\rho_{air}$)" data-toc-modified-id="Plot--temp-and-vapor-mixing-ratio-rmix-($\rho_{H2O}/\rho_{air}$)-2.1.1"><span class="toc-item-num">2.1.1&nbsp;&nbsp;</span>Plot  temp and vapor mixing ratio rmix ($\rho_{H2O}/\rho_{air}$)</a></span></li></ul></li><li><span><a href="#Calculating-scale-heights-for-temperature-and-air-density" data-toc-modified-id="Calculating-scale-heights-for-temperature-and-air-density-2.2"><span class="toc-item-num">2.2&nbsp;&nbsp;</span>Calculating scale heights for temperature and air density</a></span><ul class="toc-item"><li><span><a href="#How-do-$\overline{H_p}$-and-$\overline{H_\rho}$-compare-for-the-tropical-sounding?" data-toc-modified-id="How-do-$\overline{H_p}$-and-$\overline{H_\rho}$-compare-for-the-tropical-sounding?-2.2.1"><span class="toc-item-num">2.2.1&nbsp;&nbsp;</span>How do $\overline{H_p}$ and $\overline{H_\rho}$ compare for the tropical sounding?</a></span></li><li><span><a href="#How-well-do-these-average-values-represent-the-pressure-and-density-profiles?" data-toc-modified-id="How-well-do-these-average-values-represent-the-pressure-and-density-profiles?-2.2.2"><span class="toc-item-num">2.2.2&nbsp;&nbsp;</span>How well do these average values represent the pressure and density profiles?</a></span></li><li><span><a href="#Assignment-for-Friday" data-toc-modified-id="Assignment-for-Friday-2.2.3"><span class="toc-item-num">2.2.3&nbsp;&nbsp;</span>Assignment for Friday</a></span></li></ul></li></ul></li><li><span><a href="#solution" data-toc-modified-id="solution-3"><span class="toc-item-num">3&nbsp;&nbsp;</span>solution</a></span></li></ul></div>
 
 # # Scale heights for typical atmospheric soundings
 
@@ -10,7 +10,7 @@
 # 
 # There are five different average profiles for the tropics, subtropical summer, subtropical winder, midlatitude summer, midlatitude winter.  These are called the US Standard Atmospheres.  This notebook shows how to read and plot the soundings, and calculate the pressure and density scale heights.
 
-# In[13]:
+# In[1]:
 
 
 from matplotlib import pyplot as plt
@@ -235,7 +235,7 @@ print(f"density scale height for the {sounding} is {Hrho*1.e-3:5.2f} km")
 
 # ### How well do these average values represent the pressure and density profiles?
 
-# In[14]:
+# In[10]:
 
 
 theFig,theAx=plt.subplots(1,1)
@@ -314,3 +314,53 @@ theAx.legend(loc='best');
 # Do a change of units to convert $kg\,m^{-2}$ to $cm\,m^{-2}$ using the density of liquid water (1000 $kg\,m^{-3}$) -- that is, turn the kg of water in the 1 square meter column into cubic meters and turn that into $cm/m^{-2}$
 # 
 # 3\.  Use your function to print out W for all five soundings
+
+# # solution
+
+# In[27]:
+
+
+Rd=287.  #J/kg/K
+rhol = 1000.  #kg/m^3
+def calc_wvpath(dataframe):
+    """
+    Parameters
+    ----------
+    
+    datframe: pandas dataframe passed from std_soundings.zip
+    """
+    z=df['z'].values  # height (m)
+    den=df['den'].values #air density (kg/m^3)
+    rmix=df['rmix'].values  #vapor mixing ratio (kg/kg)
+    rhov = rmix*den  #vapor density (kg/m^3)
+    rhov_mid = (rhov[1:] + rhov[:-1])/2.  #midlayer density
+    integ=np.sum(rhov_mid*np.diff(z))  #kg/m^2
+    integ=integ/rhol  #m (per m^2)
+    integ= integ*100. #cm (per m^2)
+    return integ
+    
+    
+
+
+# In[34]:
+
+
+m2km=1.e-3
+for key,df in sound_dict.items():
+    zL=df['z'].values
+    hit = zL < 10000.
+    zL=zL[hit]
+    TempL=df['temp'].values[hit]
+    pressL=df['press'].values[hit]
+    Hbar= calcScaleHeight(TempL,pressL,zL)
+    Hrho= calcDensHeight(TempL,pressL,zL)
+    wvpath=calc_wvpath(df)
+    dashes='-'*30
+    print((f'for sounding: {key}\n'),
+           (f'Hbar = {Hbar*m2km:5.2f} km and Hrho = {Hrho*m2km:5.2f} km\n'),
+           (f'Precipitable water = {wvpath:5.3f} cm'),
+           (f'\n{dashes}\n'))
+    
+    
+    
+

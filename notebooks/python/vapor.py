@@ -1,6 +1,9 @@
 
 # coding: utf-8
 
+# <h1>Table of Contents<span class="tocSkip"></span></h1>
+# <div class="toc" style="margin-top: 1em;"><ul class="toc-item"><li><span><a href="#Stull-Ch.-2-problem-8" data-toc-modified-id="Stull-Ch.-2-problem-8-1"><span class="toc-item-num">1&nbsp;&nbsp;</span>Stull Ch. 2 problem 8</a></span></li><li><span><a href="#Getting-started-with-vapor" data-toc-modified-id="Getting-started-with-vapor-2"><span class="toc-item-num">2&nbsp;&nbsp;</span>Getting started with vapor</a></span></li><li><span><a href="#Calculate-the-horizontal-average-temperature" data-toc-modified-id="Calculate-the-horizontal-average-temperature-3"><span class="toc-item-num">3&nbsp;&nbsp;</span>Calculate the horizontal average temperature</a></span><ul class="toc-item"><li><span><a href="#Calculate-the-temperature-pertubation" data-toc-modified-id="Calculate-the-temperature-pertubation-3.1"><span class="toc-item-num">3.1&nbsp;&nbsp;</span>Calculate the temperature pertubation</a></span></li></ul></li><li><span><a href="#Getting-started-with-vapor" data-toc-modified-id="Getting-started-with-vapor-4"><span class="toc-item-num">4&nbsp;&nbsp;</span>Getting started with vapor</a></span></li></ul></div>
+
 # # Stull Ch. 2 problem 8
 
 # In[10]:
