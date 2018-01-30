@@ -3,7 +3,7 @@
 """
 import numpy as np
 from scipy import optimize
-from a405.utils.helper_funs import make_tuple
+from a500.utils.helper_funs import make_tuple
 
 class BracketError(ValueError):
     """
