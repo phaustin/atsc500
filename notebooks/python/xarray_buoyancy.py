@@ -85,7 +85,7 @@ def dict_to_nt(the_dict, tupname):
 # 10 netcdf files
 # 
 
-# In[5]:
+# In[12]:
 
 
 the_files = glob.glob('mar*nc')
@@ -105,7 +105,7 @@ the_files.sort(key=sort_name)
 #  be typing in dictionary indices  (too many keystrokes)
 #
 #
-firstrun = True
+firstrun = False
 if firstrun:
     ds = xarray.open_mfdataset(the_files, engine='netcdf4', concat_dim='ens')
     # dump the structure

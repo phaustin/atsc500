@@ -96,7 +96,7 @@ plt.close('all')
 fig,(ax1,ax2)=plt.subplots(1,2,figsize=(11,8))
 for a_name,df in sound_dict.items():
     ax1.plot(df['temp'],df['z']*meters2km,label=a_name)
-    ax1.set(ylim=(0,40),title='Temp soundings',ylabel='Height (km)',
+    ax1.set(ylim=(0,4i0),title='Temp soundings',ylabel='Height (km)',
        xlabel='Temperature (K)')
 
     ax2.plot(df['rmix']*1.e3,df['z']*meters2km,label=a_name)
