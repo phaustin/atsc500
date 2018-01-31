@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.ticker as ticks
 
-from a405.thermo.thermlib import convertTempToSkew, convertSkewToTemp, find_theta
-from a405.thermo.constants import constants as c
+from a500.thermo.thermlib import convertTempToSkew, convertSkewToTemp, find_theta
+from a500.thermo.constants import constants as c
 
 
 def makeSkewDry(ax, skew=30):
