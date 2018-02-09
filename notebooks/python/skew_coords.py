@@ -28,10 +28,10 @@ print(soundings.keys())
 print(soundings['sounding_dict'].keys())
 
 
-# In[3]:
+# In[5]:
 
 
-the_date=(2017,7,1,0)
+the_date=(2017,7,1,12)
 the_sounding=soundings['sounding_dict'][the_date]
 attributes=soundings['attributes']
 #print(attributes)

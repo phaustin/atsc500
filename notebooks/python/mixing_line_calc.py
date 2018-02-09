@@ -21,15 +21,15 @@ from pprint import pformat
 import numpy as np
 import json
 
-from a405.thermo.constants import constants as c
-from a405.thermo.thermlib import convertSkewToTemp, convertTempToSkew
-from a405.skewT.fullskew import makeSkewWet,find_corners,make_default_labels
+from a500.thermo.constants import constants as c
+from a500.thermo.thermlib import convertSkewToTemp, convertTempToSkew
+from a500.skewT.fullskew import makeSkewWet,find_corners,make_default_labels
 
 
 # In[3]:
 
 
-from a405.soundings.wyominglib import write_soundings, read_soundings
+from a500.soundings.wyominglib import write_soundings, read_soundings
 from matplotlib import pyplot as plt
 
 
@@ -40,7 +40,7 @@ from matplotlib import pyplot as plt
 # In[4]:
 
 
-get_data=False
+get_data=True
 metafile='metadata.json'
 soundingfile='save_sounding.csv'
 if get_data:

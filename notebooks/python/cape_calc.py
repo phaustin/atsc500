@@ -19,15 +19,15 @@ import numpy as np
 import pandas as pd
 from pprint import pformat
 
-from a405.thermo.constants import constants as c
-from a405.thermo.thermlib import convertSkewToTemp, convertTempToSkew
-from a405.skewT.fullskew import makeSkewWet,find_corners,make_default_labels
+from a500.thermo.constants import constants as c
+from a500.thermo.thermlib import convertSkewToTemp, convertTempToSkew
+from a500.skewT.fullskew import makeSkewWet,find_corners,make_default_labels
 
 
 # In[3]:
 
 
-from a405.soundings.wyominglib import write_soundings, read_soundings
+from a500.soundings.wyominglib import write_soundings, read_soundings
 from matplotlib import pyplot as plt
 
 
