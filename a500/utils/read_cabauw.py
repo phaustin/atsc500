@@ -180,8 +180,10 @@ def store_months(data_dict):
         month_list=list(var_dict.keys())
         out_dict=defaultdict(dict)
         var_attrs=defaultdict(dict)
+        full_dict[filetype]['filelist']=[]
         for the_month in month_list:
             month_dict=var_dict[the_month]
+            full_dict[filetype]['filelist'].append(month_dict['name'])
             print('working on {filetype:}: {start_date:} '.format_map(month_dict))
             if filetype == 'tower_meteorological':
                 with Dataset(month_dict['name'],'r') as ncin:
@@ -206,6 +208,8 @@ def store_months(data_dict):
                 raise ValueError(f"didn't recognize {filetype}")
         full_dict[filetype]['data']=out_dict
         full_dict[filetype]['var_attrs']=var_attrs
+        full_dict[filetype]['lat']=var_dict[the_month]['lat']
+        full_dict[filetype]['lon']=var_dict[the_month]['lon']
     return full_dict
 
 
@@ -308,6 +312,9 @@ def write_cdf(full_dict,outfile='caubau_ubc.nc'):
                 try:
                     ncout.createDimension(name,length) 
                 except RuntimeError:
+                    #
+                    # ignore if dimensions already exist
+                    #
                     pass
             nc_month='m{0:02d}_{1:02d}'.format(*the_month)
             date_group=ncout.createGroup(nc_month)
@@ -323,33 +330,39 @@ def write_cdf(full_dict,outfile='caubau_ubc.nc'):
             for var in ['TA','D','Q','TD','F']:
                 filetype='tower_meteorological'
                 write_var(full_dict,filetype,date_group,the_month,days_name,var,dim_tup)
-            # the_time=month_dict[the_month]['timevec']
-            # float_time=np.array([item.timestamp() for item in the_time.flat])
-            # float_time=float_time.reshape(-1,24,6)   
-            # time_nc=date_group.createVariable('time',float_time.dtype,
-            #                              [days_name,'hours','min10']) 
-            # time_nc[...]=float_time[...]
-            # time_nc.timezone='UTC'
-            # time_nc.comment='convert using datetime.fromtimestamp(var,pytz.utc)'
-            # try:
-            #     z=month_dict[the_month]['z']
-            #     z_nc=ncout.createVariable('z',z.dtype,['z'])
-            #     z_nc[...]=z[...]
-            # except RuntimeError:
-            #     #
-            #     # only create ncout z vector once
-            #     #
-            #     pass
-            # ncout.history='written by read_cabauw.ipynb'
-            # for var in ['lat','lon']:
-            #     setattr(ncout,var,float(var_attrs[var]))
-            # ncout.lat_units='degrees north'
-            # ncout.lon_units='degrees east'
-            # filelist=[]
-            # for key,value in data_dict.items():
-            #     filelist.append('{};'.format(value['name']))
-            # filelista=np.array(filelist)
-            # setattr(ncout,'filelist',filelist)
+            the_time=full_dict[filetype]['data'][the_month]['timevec']
+            float_time=np.array([item.timestamp() for item in the_time.flat])
+            float_time=float_time.reshape(-1,24,6)   
+            time_nc=date_group.createVariable('time',float_time.dtype,
+                                         [days_name,'hours','min10']) 
+            time_nc[...]=float_time[...]
+            time_nc.timezone='UTC'
+            time_nc.comment='convert using datetime.fromtimestamp(var,pytz.utc)'
+            try:
+                filetype = 'tower_meteorological'
+                z=full_dict[filetype]['data'][the_month]['z']
+                z_nc=ncout.createVariable('z',z.dtype,['z'])
+                z_nc[...]=z[...]
+            except RuntimeError:
+                #
+                # only create ncout z vector once
+                #
+                pass
+            ncout.history='written by read_cabauw.ipynb'
+            #full_dict[filetype]['var_attrs']
+            for var in ['lat','lon']:
+                setattr(ncout,var,float(full_dict[filetype][var]))
+            ncout.lat_units='degrees north'
+            ncout.lon_units='degrees east'
+            for filetype in full_dict.keys():
+                attrname=f'{filetype}_filelist'
+                def split_file(filename):
+                    filename=Path(filename)
+                    filename=str(filename.parts[-1])
+                    return filename
+                filelist = [split_file(item) for item in full_dict[filetype]['filelist']]
+                filelist=','.join(filelist)
+                setattr(ncout,attrname,filelist)
 
 def main():
     root_dir = "/Users/phil/Downloads/data"
