@@ -351,3 +351,21 @@ with Dataset(filename,'w') as ncout:
 
 get_ipython().system('pyncdump  cabauw_ubc.nc')
 
+
+# In[22]:
+
+
+from netCDF4 import Dataset
+with Dataset('cabauw_ubc.nc','r') as nc:
+    the_groups=nc.groups
+    my_groups=list(the_groups.keys())
+    my_H=nc['m201407'].variables['H'][1,:3,3]
+    #print(getattr(my_H,'accuracy'))
+    print(my_H)
+
+
+# In[14]:
+
+
+my_H
+

@@ -20,7 +20,7 @@ import os
 download('aircraft.npz',root='http://clouds.eos.ubc.ca/~phil/docs/atsc500/data')
 
 
-# In[ ]:
+# In[2]:
 
 
 #http://stackoverflow.com/questions/643699/how-can-i-use-numpy-correlate-to-do-autocorrelation
@@ -37,7 +37,7 @@ ax.set(xlabel='lag (seconds)',title='autocorrelation of wvel using numpy.correla
 out=ax.plot(ticks[:300],auto_data[:300])
 
 
-# In[ ]:
+# In[3]:
 
 
 import numpy.fft as fft
@@ -48,4 +48,28 @@ auto_fft = np.real(fft.ifft(auto_fft))
 fig,ax = plt.subplots(1,1,figsize=(10,8))
 ax.plot(ticks[:300],auto_fft[:300])
 out=ax.set(xlabel='lag (seconds)',title='autocorrelation using fft')
+
+
+# In[4]:
+
+
+data
+
+
+# In[5]:
+
+
+data.keys()
+
+
+# In[6]:
+
+
+data['readme']
+
+
+# In[8]:
+
+
+len(data['wvel'])/25.
 
