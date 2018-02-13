@@ -168,11 +168,19 @@ def write_dates(filetype,filelist):
 
 def store_months(data_dict):
     """
-    given a nested dictionary with keys data_dict[filetype][year,month]
+    given: a nested dictionary with keys data_dict[filetype][year,month]
     where filetype is one of 
     'surface_fluxes', 'surface meteorological' or 'tower_meteorological'
-    and [year,month] is a key like (2014,10) points to a dictionary returned
-    by write_dates  get fluxes and tower data for the monthly files from cabauw
+    and [year,month] is a key like (2014,10) that points to a dictionary returned
+    by write_dates  
+
+    get fluxes and tower data for the monthly files from cabauw
+
+    Parameters
+    ----------
+
+    data_dict: dict
+       dictionary with 
     """
     full_dict=defaultdict(dict)
     for filetype in data_dict.keys():
@@ -219,69 +227,32 @@ def store_months(data_dict):
 
 # In[8]:
 
-def sunset_sunrise():
+def sunset_sunrise(lon,lat,the_date):
+    """
+    Parameters
+    ----------
+
+    lon: float
+      degrees east
+    lat: float
+      degrees north
+    the_date: datetime object
+      timezone is UCT
+
+    Returns
+    -------
+
+    sunrise,noon,sunset
+    """
     import ephem
-    for the_month in month_dict.keys():
-        var='tower_meteorological'
-        start_time=month_dict[the_month]['timevec'][0,0,0]
-        cabauw=ephem.Observer()
-        cabauw.date=start_time
-        cabauw.lon = var_attrs['lon']
-        cabauw.lat = var_attrs['lat']
-        sunrise=cabauw.next_rising(ephem.Sun())
-        noon = cabauw.next_transit(ephem.Sun(),start=sunrise)
-        sunset = cabauw.next_setting(ephem.Sun())
-        print('sunrise is {} UTC'.format(sunrise))
-        print('solar noon {} UTC'.format(noon))
-        print('sunset is {} UTC'.format(sunset))
-
-
-# # Data first look
-
-# In[9]:
-
-
-# from matplotlib import pyplot as plt
-# plt.style.use('ggplot')
-# plt.close('all')
-# print('starting: ',month_dict.keys())    
-# for the_month in month_dict.keys():
-#     hourly_wind_avg = month_dict[the_month]['F'].mean(axis=2)
-#     z=month_dict[the_month]['z']
-#     hour=2
-#     fig,ax=plt.subplots(1,2,figsize=(8,6))
-#     ax[0].plot(hourly_wind_avg[:,hour,:].T,z)
-#     ax[0].set(title='hour: {} UTC'.format(hour))
-#     hour=14
-#     ax[1].plot(hourly_wind_avg[:,hour,:].T,z)
-#     ax[1].set(title='hour: {} UTC'.format(hour))
-#     fig.suptitle('{} hourly avg winds'.format(the_month))
-
-#     #
-#     # date plotting tips at http://matplotlib.org/users/recipes.html
-#     #
-#     the_time = month_dict[the_month]['timevec']
-#     H=month_dict[the_month]['H']
-#     fig,ax=plt.subplots(1,1,figsize=(8,6))
-#     fig.autofmt_xdate()
-#     ax.plot(the_time.flat,H.flat)
-#     title='sensible heat flux for {}'.format(the_month)
-#     ax.set(title=title,ylabel='H $(W\,m^{-2})$')
-# print('finished plot: ',month_dict.keys())
-
-
-# # Checkpoint all the data into one netcdf file
-# 
-# I want to save month_dict into a netcdf file so we don't need
-# to repeat this processing but can start with a merged dataset
-# that has all days of interest and all
-# instruments in a single place.   To do that, I group the measurements
-# into individual days using [netcdf groups](http://unidata.github.io/netcdf4-python)
-# 
-# I transfer all the attributes I read into the var_attrs dict so I maintain
-# the original metadata as much as possible
-
-# In[10]:
+    cabauw=ephem.Observer()
+    cabauw.date=the_date
+    cabauw.lon = lon
+    cabauw.lat = lat
+    sunrise=cabauw.next_rising(ephem.Sun())
+    noon = cabauw.next_transit(ephem.Sun(),start=sunrise)
+    sunset = cabauw.next_setting(ephem.Sun())
+    return sunrise,noon,sunset
 
 
 def write_attrs(ncvar,attr_dict):
