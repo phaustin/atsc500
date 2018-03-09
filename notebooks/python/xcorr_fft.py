@@ -37,6 +37,12 @@ ax.set(xlabel='lag (seconds)',title='autocorrelation of wvel using numpy.correla
 out=ax.plot(ticks[:300],auto_data[:300])
 
 
+# In[8]:
+
+
+np.mean(wvel**2.)
+
+
 # In[3]:
 
 
@@ -68,7 +74,7 @@ data.keys()
 data['readme']
 
 
-# In[8]:
+# In[7]:
 
 
 len(data['wvel'])/25.

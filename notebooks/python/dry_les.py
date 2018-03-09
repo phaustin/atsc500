@@ -4,10 +4,10 @@
 # <h1>Table of Contents<span class="tocSkip"></span></h1>
 # <div class="toc" style="margin-top: 1em;"><ul class="toc-item"><li><span><a href="#The-Dry-LES-dataset" data-toc-modified-id="The-Dry-LES-dataset-1"><span class="toc-item-num">1&nbsp;&nbsp;</span>The Dry LES dataset</a></span></li><li><span><a href="#Intro-to-netcdf" data-toc-modified-id="Intro-to-netcdf-2"><span class="toc-item-num">2&nbsp;&nbsp;</span>Intro to netcdf</a></span></li><li><span><a href="#Intro-to-python-packages" data-toc-modified-id="Intro-to-python-packages-3"><span class="toc-item-num">3&nbsp;&nbsp;</span>Intro to python packages</a></span></li><li><span><a href="#Dumping-the-netcdf-metadata" data-toc-modified-id="Dumping-the-netcdf-metadata-4"><span class="toc-item-num">4&nbsp;&nbsp;</span>Dumping the netcdf metadata</a></span><ul class="toc-item"><li><span><a href="#Plot-$\theta$-profile-for-every-third-timestep-(i.e.-every-30-minutes)" data-toc-modified-id="Plot-$\theta$-profile-for-every-third-timestep-(i.e.-every-30-minutes)-4.1"><span class="toc-item-num">4.1&nbsp;&nbsp;</span>Plot $\theta$ profile for every third timestep (i.e. every 30 minutes)</a></span></li><li><span><a href="#Color-contour-plot-of-one-level-for-realization-c1,-last-timestep" data-toc-modified-id="Color-contour-plot-of-one-level-for-realization-c1,-last-timestep-4.2"><span class="toc-item-num">4.2&nbsp;&nbsp;</span>Color contour plot of one level for realization c1, last timestep</a></span></li></ul></li></ul></div>
 
-# In[1]:
+# In[10]:
 
 
-get_ipython().system('conda install -y netcdf4')
+#!conda install -y netcdf4
 
 
 # In[2]:
@@ -106,7 +106,7 @@ for i in np.arange(0,temp.shape[0],3):
     ax.plot(theta,z)
 out=ax.set(xlabel=r'$\overline{\theta}$ (K)',ylabel='height (m)',
        title='LES dry run for realization 1:  surface flux=60 $W\,m^{-2}$, $\Gamma$=10 K/km')
-
+ax.grid(True, which='both')
 
 
 # In[6]:
