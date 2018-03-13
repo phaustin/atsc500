@@ -7,10 +7,10 @@ from collections import Iterable
 import numpy as np
 import doctest
 
-from a500.thermo.constants import constants as c
-from a500.thermo import rootfinder as rf
+from .constants import constants as c
+from . import rootfinder as rf
 import numpy.testing as ntest
-from a500.thermo.rootfinder import BracketError
+from .rootfinder import BracketError
 from .constants import constants as c
 
 def find_lv(temp):
