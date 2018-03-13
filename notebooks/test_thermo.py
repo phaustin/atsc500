@@ -12,7 +12,7 @@ press=90. #kPa
 # find the saturation mixing ratio and potential temp from the temperature and pressure
 #
 print(tf.qs_tp(Temp,press))
-print(tf.theta(Temp,press))
+print(tf.find_theta(Temp,press))
 #
 # find the dew point temperature and the lifting condensation level
 #
