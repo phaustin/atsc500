@@ -17,12 +17,73 @@ underline is given and the string after the second underline indicates
 the approximation name.
 
 """
+
 import numpy as np
 from . import thermconst as tc
 from .thermconst import LV0,CPD
 import textwrap
 import sys
-from ..utils.helper_funs import test_scalar
+from ..utils.helper_funs import test_scalar, make_tuple
+
+def find_height(press,scale_height=8000.,psfc=100.):
+    """
+       find height (m) given pressure (kPa) assuming hydrostatic atmosphere
+    """
+    height=scale_height*np.log(psfc/press)
+    return height
+
+def find_press(height,scale_height=8000.,psfc=100.):
+    """
+       find press (kPa) given height (m) assuming hydrostatic atmosphere
+    """
+    press=psfc*np.exp(-height/scale_height)
+    return press
+
+def LCL_thetal(thetal0,qt,psfc=100.):
+    """
+       find LCL from conserved variables
+       input: thetal0 (K), qt (kg/kg)
+       output:  LCL pressure in kPa 
+    """
+    press=100.
+    invert=t_uos_thetal(thetal0,qt,press)
+    if invert.issat:
+        LCLval = press
+    else:
+        Tdew = tmr(qt,press)
+        LCLval = LCL(Tdew,invert.temp,press)
+    return LCLval
+
+
+def calc_ABcoeffs(thetal0,qt,press):
+    """
+      calculate the A,B saturated/unsaturated
+      coefficients that convert thetal,qt perturbations
+      to buoyancy perturbations
+
+      Reference:  Stephan de Roode's cloud physics notes http://www.srderoode.nl/Teaching/Clouds.pdf
+
+      input: thetal (K), qt (kg/kg), press (kPa) all scalars
+      output: A,B, (scalars), issat (bool)  True if saturated
+
+    """
+    invert=t_uos_thetal(thetal0,qt,press)
+    if invert.issat:
+        qsat = qs_tp(invert.temp,press)
+        theta0= find_theta(invert.temp,press)
+        dqsdT = dqs_dt(invert.temp,press)
+        Lv=L_t(invert.temp)
+        # #de Roode 5.29
+        A = (1. - qt + (qsat + theta0 * dqsdT)*tc.EPS)/ \
+             (1. + Lv/tc.CPD * dqsdT)
+        #de Roode 5.20
+        B = Lv/tc.CPD * A - theta0
+    else:
+        #de Roode 5.18
+        A = 1. + tc.EPSI * qt
+        B = thetal0 * tc.EPSI
+    return A,B,invert.issat
+
 
 def alt_thetal(press,Temp,qt):
     press=np.atleast_1d(press)
@@ -133,7 +194,7 @@ def dqs_dt(temp,p):
    """
    lv=L_t(temp)
    qs=qs_tp(temp,p)
-   dqsdt = qs*lv/(tc.Rv*temp**2)
+   dqsdt = qs*lv/(tc.RV*temp**2)
    return dqsdt
    
     
@@ -228,11 +289,9 @@ def findDiffTthetal(Tguess,thetaltarget,rtTarget,press):
     theDiff=thetaltarget - thetalguess
     return theDiff
 
-
-
-def t_uos(h,rt,p,gz):
+def t_uos(h,qt,p,gz):
     """in: h=liquid water static energy per unit of moist air h(J/kg)
-           rt=total water mixing ratio (kg/kg)
+           qt=total water mixing ratio (kg/kg)
            p=pressure (kPa),gz=geopotential height gz (m2/s2)
        out:dictionary with t, ql and x
        Emanuel p. 123, 4.5.25
@@ -258,33 +317,39 @@ def t_uos(h,rt,p,gz):
 
     Tlow=230.
     Thigh=340.
-    t1=optimize.zeros.brenth(findDiffT, Tlow, Thigh, (h,rt, p,gz));
+    t1=optimize.zeros.brenth(findDiffT, Tlow, Thigh, (h,qt, p,gz));
     result={}
     rs1=rs_tp(t1,p); 
-    if   (rt>rs1):
-        result["T"]=t1; result["RL"]=rt-rs1; result["X"]=1;result["RV"]=rs1
+    if   (qt>rs1):
+        result["T"]=t1; result["QL"]=qt-rs1; result["X"]=1;result["QV"]=rs1
     else:
-        result["T"]=t1; result["RL"]=0.0;    result["X"]=0;result["RV"]=rt
+        result["T"]=t1; result["QL"]=0.0;    result["X"]=0;result["QV"]=qt
     return result
 
-
-def t_uos_thetal(thetal,rt,p):
-    """in: h=liquid water static energy per unit of moist air h(J/kg)
-           rt=total water mixing ratio (kg/kg)
-           p=pressure (kPa),gz=geopotential height gz (m2/s2)
+def t_uos_thetal(thetal,qt,p):
+    """in: thetal= liquid water potentical temperature (K)
+           qt=total water mixing ratio (kg/kg)
+           p=pressure (kPa)
        out:dictionary with t, ql and x
        Emanuel p. 123, 4.5.25
     """
     Tlow=230.
     Thigh=340.
-    t1=optimize.zeros.brenth(findDiffTthetal, Tlow, Thigh, (thetal,rt, p));
+    t1=optimize.zeros.brenth(findDiffTthetal, Tlow, Thigh, (thetal,qt, p));
     result={}
     rs1=rs_tp(t1,p)
-    if   (rt>rs1):
-        result["T"]=t1; result["RL"]=rt-rs1; result["X"]=1;result["RV"]=rs1
+    if   (qt>rs1):
+        result["temp"]=t1;
+        result["ql"]=qt-rs1;
+        result["issat"]=True;
+        result["qv"]=rs1
     else:
-        result["T"]=t1; result["RL"]=0.0;    result["X"]=0;result["RV"]=rt
-    return result
+        result["temp"]=t1;
+        result["ql"]=0.0;
+        result["issat"]=False;
+        result["qv"]=qt
+    return make_tuple(result)
+
 
 def sat_line(h,p,gz):
     """find rtList that is exactly saturated at static energy
@@ -591,12 +656,12 @@ if __name__=='__main__':
     print("temp: ",theAnswer)
     print(t_uos(ht,rt,press,gzval))
     
-def thetaes(p, T, ws):
+def thetaes(p, T, rs):
     """in: p=pressure in kPa, T=temperature in Kelvin,
-           ws=saturation mixing ratio kg/kg
+           rs=saturation mixing ratio kg/kg
        out:thetaes=saturated equivalent potential temperature in Kelvin
     """
-    thetaes=T*(100./p)**(RD/CPD)*np.exp((LV0*ws)/(CPD*T))
+    thetaes=T*(100./p)**(RD/CPD)*np.exp((LV0*rs)/(CPD*T))
     return thetaes
 
 
@@ -667,7 +732,8 @@ def thetae(tds, ts, ps):
     thetae = find_theta(ts, ps)*np.exp(2.6518986*find_rs(tds, ps)*1000./Tlcl)
     return thetae
 
-def testit():
+
+def testitA():
     "run a default test on the module"
     #from PS 2, problem 2
     p=100.
@@ -690,8 +756,36 @@ def testit():
     """
     print("\nanswer expected: \n",answer)
 
+
+def testitB():
+    "run a default test on the module"
+    p=100.
+    T=288.15
+    Td=277.15
+    np.testing.assert_almost_equal(T,288.15)
+    np.testing.assert_almost_equal(Td,277.15)
+    np.testing.assert_almost_equal(find_rs(Td,p),0.00509417)
+    np.testing.assert_almost_equal(p,100.0)
+    np.testing.assert_almost_equal(LCL(Td,T,p),84.86,decimal=2)
+    np.testing.assert_almost_equal(thetae(Td,T,p),302.67,decimal=2)
+    thetal0=280.
+    qt=5.e-3
+    press=90.
+    #
+    # should be saturated
+    #
+    A,B,issat = calc_ABcoeffs(thetal0,qt,press)
+    np.testing.assert_almost_equal([A,B,issat],[0.57718,1152.49,True],decimal=2)
+    np.testing.assert_almost_equal(LCL_thetal(thetal0,qt),95.427,decimal=2)
+    #
+    # should be unsaturated
+    #
+    press=96.
+    A,B,issat = calc_ABcoeffs(thetal0,qt,press)
+    np.testing.assert_almost_equal([A,B,issat],[1.003,170.1811,False],decimal=3)
+    
 if __name__== '__main__':
-    testit()
-    
-    
-    
+    pass
+    # print('running tests: ')
+    # testitA()
+    # testitB()

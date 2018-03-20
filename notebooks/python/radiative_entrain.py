@@ -2,9 +2,9 @@
 # coding: utf-8
 
 # <h1>Table of Contents<span class="tocSkip"></span></h1>
-# <div class="toc"><ul class="toc-item"><li><ul class="toc-item"><li><span><a href="#Add-an-equation-for-the-vapor-mixing-ratio" data-toc-modified-id="Add-an-equation-for-the-vapor-mixing-ratio-0.1"><span class="toc-item-num">0.1&nbsp;&nbsp;</span>Add an equation for the vapor mixing ratio</a></span></li><li><span><a href="#get-the-flux-profiles-and-the-cloud-thickness" data-toc-modified-id="get-the-flux-profiles-and-the-cloud-thickness-0.2"><span class="toc-item-num">0.2&nbsp;&nbsp;</span>get the flux profiles and the cloud thickness</a></span></li></ul></li><li><span><a href="#Dump-to-a-csv-file-called-vaporprofile.csv" data-toc-modified-id="Dump-to-a-csv-file-called-vaporprofile.csv-1"><span class="toc-item-num">1&nbsp;&nbsp;</span>Dump to a csv file called vaporprofile.csv</a></span></li></ul></div>
+# <div class="toc"><ul class="toc-item"><li><span><a href="#Use-the-simple-radiation-entrainment-closure-from-Stephan's-slides" data-toc-modified-id="Use-the-simple-radiation-entrainment-closure-from-Stephan's-slides-1"><span class="toc-item-num">1&nbsp;&nbsp;</span>Use the simple radiation entrainment closure from Stephan's slides</a></span></li><li><span><a href="#get-the-flux-profiles-and-the-cloud-thickness" data-toc-modified-id="get-the-flux-profiles-and-the-cloud-thickness-2"><span class="toc-item-num">2&nbsp;&nbsp;</span>get the flux profiles and the cloud thickness</a></span></li><li><span><a href="#Dump-the-result-in-a-csv" data-toc-modified-id="Dump-the-result-in-a-csv-3"><span class="toc-item-num">3&nbsp;&nbsp;</span>Dump the result in a csv</a></span></li></ul></div>
 
-# ### Add an equation for the vapor mixing ratio
+# ### Use the simple radiation entrainment closure from Stephan's slides
 
 # In[1]:
 
@@ -28,6 +28,7 @@ def make_tuple(tupname,in_dict):
     return the_tup
 
 
+
 # In[2]:
 
 
@@ -48,35 +49,36 @@ def dmixed_vars(the_vars,tstep,coeffs):
       surface flux from drag law with subsidence and diagnosed deltheta
     """
     #print('the_vars: ',the_vars,D,U)
+    cp=1004.
     deltheta = theta_ft(the_vars[1],coeffs.ft_intercept,coeffs.ft_gamma) - the_vars[0]
     F0 = coeffs.U*coeffs.Cd*(coeffs.sst - the_vars[0])  #surface heat flux
     Fqv0 = coeffs.U*coeffs.Cd*(coeffs.qsfc - the_vars[2])  #surface vapor flux
-    Fint = -coeffs.k*F0  #entrainment heat flux
-    went = -Fint/deltheta  #entrainment velocity (positive upward)
+    went = coeffs.eta*coeffs.radcool/(cp*deltheta)  #radcool defined positive for cooling
+    Fint = -went*deltheta
     Fqvent = -went*( coeffs.ft_qv - the_vars[2])
     wsubs = -coeffs.D*the_vars[1]
     rho=1.
     cp=1004.
     derivs=np.empty_like(the_vars)
-    derivs[0]=(F0 - Fint)/(the_vars[1]*rho) - coeffs.radcool/1004./the_vars[1]
+    derivs[0]=(F0 - Fint)/(the_vars[1]*rho) - coeffs.radcool/(cp*the_vars[1])
     derivs[1] = went + wsubs
     derivs[2] = (Fqv0 - Fqvent)/the_vars[1]
     return derivs
 
 
-# In[8]:
+# In[3]:
 
 
 dtout=10.  #minutes
-end_time=8*24.   #hours
+end_time=15*24.   #hours
 del_time=dtout*60. #seconds
 end_time=end_time*3600. #seconds
-sst=297
+sst=280
 D=5.e-6  #s-1
-U=7  #m/s
+U=10  #m/s
 psfc=100. #kPa
 qsfc=tf.qs_tp(sst,psfc)
-ft_intercept = 292 #K
+ft_intercept = 288 #K
 ft_gamma = 6.e-3  #K/m
 ft_qv = 2.e-3
 k=0.2  #entrainment efficiency
@@ -84,13 +86,12 @@ Cd = 1.e-3  #drag coefficient
 tspan = np.arange(0.,end_time,del_time)
 vars_init=[285.,400.,8.e-3]  #theta (K), height (m) qv (kg/kg) to start
 the_tup=dict(D=D,U=U,sst=sst,ft_intercept=ft_intercept,ft_gamma=ft_gamma,
-             qsfc=qsfc,ft_qv=ft_qv,k=k,Cd=Cd,radcool=30.)
+             qsfc=qsfc,ft_qv=ft_qv,k=k,Cd=Cd,radcool=35.,eta=0.8)
 the_tup=make_tuple('coeffs',the_tup)
 output=integrate.odeint(dmixed_vars, vars_init, tspan,(the_tup,))
 result=pd.DataFrame.from_records(output,columns=['theta','h','qv'])
 result['time']=tspan/3600./24.  #days
 result['deltheta'] = theta_ft(result['h'].values,ft_intercept,ft_gamma) - result['theta']
-result.tail()
 
 
 # In[4]:
@@ -116,7 +117,7 @@ out=ax[4].set(title=r'$\Delta q_v$ (g/kg)')
 # the next cell applies the calc_lcl function to every row in the dataframe and
 # adds it as a new column
 
-# In[9]:
+# In[5]:
 
 
 def calc_lcl(row,psfc):
@@ -164,7 +165,6 @@ result['entflux_qv']=result.apply(calc_entflux_qv,axis=1,args=(the_tup,))
 cooling = np.empty_like(result['time'].values)
 cooling[:] = the_tup.radcool
 result['radcool']  = cooling
-result.tail()
 
 
 # In[6]:
@@ -177,12 +177,17 @@ result.plot('time','entflux_theta',ax=ax[2])
 out=result.plot('time','entflux_qv',ax=ax[3])
 
 
-# ## Dump to a csv file called vaporprofile.csv
-
 # In[7]:
 
 
-the_name='vapor_profile.csv'
-with open(the_name,'w') as f:
-    result.to_csv(f,index=False)
+result
+
+
+# ### Dump the result in a csv
+
+# In[8]:
+
+
+with open('dumpradiative.csv','w') as f:
+    result.to_csv(f)
 
