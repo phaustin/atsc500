@@ -48,7 +48,7 @@ steady_state=make_tuple(out.to_dict())
 
 # ### plot the $\theta_l$ and $q_t$  flux profiles at 30 levels
 
-# In[30]:
+# In[4]:
 
 
 def flux_prof(z,coeffs):
@@ -76,7 +76,7 @@ ax1.set(title=r'$q_t\ flux\ (W m^{-2})$',ylabel='height (m)');
 
 # ## Now turn this into a buoyancy flux profile
 
-# In[37]:
+# In[5]:
 
 
 from a500.thermo.thermfuncs import find_press, calc_ABcoeffs
@@ -107,7 +107,7 @@ out=ax0.set(title=r'buyouancy flux (K m/s)',ylabel='height (m)')
 
 # ### borrow calc_lcl from interactive_vapor notebook
 
-# In[5]:
+# In[6]:
 
 
 def calc_lcl(row,psfc):
@@ -132,7 +132,7 @@ lcl_z, lcl_p
 # 
 # (unnumbered del Gesso equations below equation 14)
 
-# In[14]:
+# In[7]:
 
 
 dth=steady_state.deltheta
@@ -156,7 +156,7 @@ print('del_thv_dry',del_thv_dry)
 print('del_thv_sat',del_thv_sat)
 
 
-# In[17]:
+# In[8]:
 
 
 Aw, Bw
@@ -166,7 +166,7 @@ Aw, Bw
 # 
 # (see Stevens 2002 equations 16-18)
 
-# In[7]:
+# In[9]:
 
 
 ql_max = invert.ql
@@ -180,7 +180,7 @@ print('Del_thv',Del_thv)
 # 
 # Gesso equations 13-14
 
-# In[8]:
+# In[10]:
 
 
 zi = steady_state.h
@@ -207,7 +207,7 @@ print(zb)
 
 # Find wstar using Gesso equations 8 and 12
 
-# In[9]:
+# In[11]:
 
 
 wstar=(2.5*9.8/T_0*zi*Theta_NE)**(1/3.)
@@ -218,7 +218,7 @@ print('wstar without entrainment: {:5.3f} (m/s)'.format(wstar))
 # 
 # Stevens equation 20
 
-# In[10]:
+# In[12]:
 
 
 chi_star = Cl * ql_max / (del_thv_dry - del_thv_sat)
@@ -229,7 +229,7 @@ print('just saturated at with {:5.2f}% environmental air'.format(chi_star*100.))
 # 
 # Stevens eq. 30 and de Roode lecture 2  slide 12 -- note that $\Delta m/\Delta \theta_v = 1$ for no evaporation
 
-# In[11]:
+# In[13]:
 
 
 Del_m = del_thv_dry + chi_star * (2. - chi_star) * (del_thv_sat - del_thv_dry)
@@ -240,7 +240,7 @@ print('Δm/Δθv = {:5.2f}'.format(Del_m/Del_thv))
 # 
 # de Roode lecture 2 slide 15 and Stevens eqn 29 with a2=15 following Bretherton
 
-# In[12]:
+# In[14]:
 
 
 a2=15.
@@ -250,7 +250,7 @@ print('original Del_thv={:5.2f} (K), Del_thv_NT = {:5.2f} (K)'.format(Del_thv,De
 
 # ### Calculate the final entrainment rate according to de Roode lecture 2 slide 15
 
-# In[13]:
+# In[15]:
 
 
 A_NT = 0.2

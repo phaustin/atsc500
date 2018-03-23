@@ -64,7 +64,7 @@ def dmixed_vars(the_vars,tstep,coeffs):
     return derivs
 
 
-# In[8]:
+# In[3]:
 
 
 dtout=10.  #minutes
@@ -78,7 +78,7 @@ psfc=100. #kPa
 qsfc=tf.qs_tp(sst,psfc)
 ft_intercept = 292 #K
 ft_gamma = 6.e-3  #K/m
-ft_qv = 2.e-3
+ft_qv = 4.e-3
 k=0.2  #entrainment efficiency
 Cd = 1.e-3  #drag coefficient
 tspan = np.arange(0.,end_time,del_time)
@@ -116,7 +116,7 @@ out=ax[4].set(title=r'$\Delta q_v$ (g/kg)')
 # the next cell applies the calc_lcl function to every row in the dataframe and
 # adds it as a new column
 
-# In[9]:
+# In[5]:
 
 
 def calc_lcl(row,psfc):

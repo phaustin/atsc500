@@ -775,7 +775,7 @@ def testitB():
     # should be saturated
     #
     A,B,issat = calc_ABcoeffs(thetal0,qt,press)
-    np.testing.assert_almost_equal([A,B,issat],[0.57718,1152.49,True],decimal=2)
+    np.testing.assert_almost_equal([A,B,issat],[0.57718,1152.59,True],decimal=2)
     np.testing.assert_almost_equal(LCL_thetal(thetal0,qt),95.427,decimal=2)
     #
     # should be unsaturated
